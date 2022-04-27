@@ -1,0 +1,48 @@
+    <div class="jumbotron text-center mt-5">
+        <h1 class="bg-info p-3 m-3 border border-light" style="border-radius:50px">Book Finder</h1>
+        <p></p>
+    </div>
+
+    <div class="p-5 m-3 border border-primary bg-light align-center d-flex align-items-center flex-column bd-highlight mb-3" style="border-radius:30px">
+        <h4 class="text-center text-info"><i>Find books you love and add them to your wishlist!</i></h4><br>
+        
+            <form method="post" action="/books/search" class="d-flex align-items-right flex-column bd-highlight mb-3 justify-content-center" style="font-size:20px">
+                <div>
+                    Title&emsp;&emsp;&emsp;&emsp;
+                    <input type="text" name="title" placeholder="Batman" value=" " class="border border-info" style="height:50px;border-radius:10px">
+                </div>
+                <br>
+                <div>
+                    Author &emsp;&emsp;&ensp;
+                    <input type="text" name="author" placeholder="John Smith" value=" " class="border border-info" style="height:50px;border-radius:10px">
+                </div>
+                <br>
+                <div>
+                Min-Rating&ensp;&ensp;<select id="rating" name="rating" class="border border-info" style="height:50px;border-radius:10px">
+                    <% var rating=[1,2,3,4];
+                    for ( var i = 0; i < rating.length; i++ ){ %>
+                    <option><%= rating[i]%></option>
+                    <%}%>
+                    </select>
+                </div><br>
+                <div>
+                Max Price &emsp;&ensp;<input type="number" name="price" value="100" class="border border-info" style="height:50px;border-radius:10px"
+                placeholder="e.g. 5">
+                </div>
+                <br>
+                <button type="submit"  class="btn btn-info">Search</button>
+            </form>
+           
+            <br>
+            <% if (loggedIn) { %>
+                <a href="/wishlist/show">Show Book WishList</a>
+                <%} else { %>
+                <p> Log In to save to view your wishlist </p>
+                <% } %>
+           
+        
+                </div>
+    
+   
+
+

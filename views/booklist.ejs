@@ -1,0 +1,49 @@
+<h1>The books are</h1>
+<hr>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+   
+            <th>Title</th>
+            <th>Author</th>
+            <th>Rating</th>
+            <th>Description</th>
+            <th>Price($)</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% for (book of books) {
+       
+        const title = book.title;
+        const author = book.author;
+        const rating = book.rating;
+        const description = book.description;
+        const price = (book.price*0.27).toFixed();
+
+         %>
+      <tr class="mb-2"> 
+      
+        <td><a href="/books/show/<%= book._id %>"><%= title %></a></td>
+        <td>
+           <%= author %>
+        </td>
+        <td>
+            <strong><%= rating %></strong>
+        </td>
+        <td>
+            <strong><%= description %></strong>
+        </td>
+       
+
+        <td>
+            <%= price %>
+        </td>
+    
+    </tr>
+    <% } %>
+    </tbody>
+</table>
+
+<pre>
+    
+</pre>

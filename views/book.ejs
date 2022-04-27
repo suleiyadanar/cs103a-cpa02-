@@ -1,0 +1,11 @@
+<div class="bg-light m-5 p-2 border border-primary border-2">
+    <div class="">
+        <span>
+            <%= book._id %> 
+            <%= book.author %> 
+            <%= book.rating %> 
+        </span>
+        <div><a href="/addBook/<%= book['_id'] %>">(add to wishlist)</a></div>
+        
+    </div>
+</div>
