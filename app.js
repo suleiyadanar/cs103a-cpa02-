@@ -13,7 +13,9 @@ const cookieParser = require("cookie-parser"); // to handle cookies
 const session = require("express-session"); // to handle sessions using cookies
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
-const axios = require("axios")
+
+const axios = require("axios");
+
 
 // *********************************************************** //
 //  Loading models
@@ -125,22 +127,43 @@ app.get('/upsertDB',
     res.send("data uploaded: "+num)
   }
 )
+
 app.post('/books/search',
   async (req,res,next) => {
-    const{title, author,rating,price }=req.body;
-    const books = await Book.find({
-      
-      $and:[
-        {title:new RegExp(title, 'i')},
-        {author:new RegExp(author, 'i')},
-        {rating:{$gt:rating}},
-        {price:{$lt:price}}
-      ]
+    const{title, author,isbn}=req.body;
+    const response = await axios.get("https://www.googleapis.com/books/v1/volumes?q=intitle:"+title+"+inauthor:"+author+"+isbn:"+isbn+"&fields=items(volumeInfo/title,volumeInfo/authors,volumeInfo/imageLinks/thumbnail,volumeInfo/description)&key=AIzaSyCHHEgq0mIyVMNNmnUqoXIIWcdKRjdNOoU")
+    res.locals.titleRes=response.data.items.map(x => x['volumeInfo']['title'])
+    res.locals.authorRes=response.data.items.map(x => x['volumeInfo']['authors'])
+    res.locals.descriptionRes=response.data.items.map(x => x['volumeInfo']['description'])
+    res.locals.imageRes=response.data.items.map(x => x['volumeInfo']['imageLinks']['thumbnail'])
+    if(checkNested(response.data.items,"volumeInfo","imageLinks","thumbnail")){
+      res.locals.imageRes=response.data.items.map(x => x['volumeInfo']['imageLinks']['thumbnail'])
+    }
+    console.log(res.locals.image)
+    res.render('booklist')
   })
-  console.log(title)
-  res.locals.books = books
-  console.log(req.body)
-  res.render('booklist')
+
+app.post('/books/search/book',
+  async (req,res,next) => {
+    const {isbn}=req.body.view;
+    console.log(isbn)
+    try {
+   
+      const response = await axios.get('https://www.googleapis.com/books/v1/volumes?q=isbn:'+{isbn}+'&key=AIzaSyCHHEgq0mIyVMNNmnUqoXIIWcdKRjdNOoU')
+      const results = JSON.parse(response)
+      if(results.totalItems){
+        var book = results.items[0];
+        if(book['volumeInfo']["readingModes"]["image"]){
+          res.locals.image=book['volumeInfo']['imageLinks']['smallThumbnail']
+        }
+      }
+      
+      console.log(req.body)
+      res.render('booklist')
+      
+    } catch (error) {
+      next(error)     
+    }
   }
 )
 app.post('/books/byTitle',
@@ -164,7 +187,7 @@ app.post('/books/byAuthor',
     const {author} = req.body;
     const books = await Book.find({author:new RegExp(author, 'i')}).sort({rating:-1,price:1})
     res.locals.books = books
-    console.log(author)
+    console.log(books)
     res.render('booklist')
   }
 )
@@ -264,7 +287,17 @@ function onListening() {
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
+function checkNested(obj /*, level1, level2, ... levelN*/) {
+  var args = Array.prototype.slice.call(arguments, 1);
 
+  for (var i = 0; i < args.length; i++) {
+    if (!obj || !obj.hasOwnProperty(args[i])) {
+      return false;
+    }
+    obj = obj[args[i]];
+  }
+  return true;
+}
 function onError(error) {
   if (error.syscall !== "listen") {
     throw error;

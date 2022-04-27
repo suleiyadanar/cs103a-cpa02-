@@ -18,6 +18,7 @@ var bookSchema = Schema( {
     isbn: String,
     language: String,
     published_date: String,
+    image: String
 } );
 
 module.exports = mongoose.model( 'Book', bookSchema );

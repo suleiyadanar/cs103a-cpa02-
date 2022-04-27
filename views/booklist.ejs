@@ -1,49 +1,18 @@
 <h1>The books are</h1>
 <hr>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-   
-            <th>Title</th>
-            <th>Author</th>
-            <th>Rating</th>
-            <th>Description</th>
-            <th>Price($)</th>
-        </tr>
-    </thead>
-    <tbody>
-    <% for (book of books) {
-       
-        const title = book.title;
-        const author = book.author;
-        const rating = book.rating;
-        const description = book.description;
-        const price = (book.price*0.27).toFixed();
-
-         %>
-      <tr class="mb-2"> 
-      
-        <td><a href="/books/show/<%= book._id %>"><%= title %></a></td>
-        <td>
-           <%= author %>
-        </td>
-        <td>
-            <strong><%= rating %></strong>
-        </td>
-        <td>
-            <strong><%= description %></strong>
-        </td>
-       
-
-        <td>
-            <%= price %>
-        </td>
-    
-    </tr>
+<div class="flex">
+<% for (var i=0; i<titleRes.length; i++) { %>
+<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-header"><%= titleRes[i] %></div>
+    <div class="card-body">
+    <% for (var j=0; j<authorRes[i].length; j++) { %>
+      <h5 class="card-title"><%= authorRes[i][j] %></h5>
     <% } %>
-    </tbody>
-</table>
-
+    <img src="<%= imageRes[i] %>" style="width:200px">
+    </div>
+  </div>
+<% } %>
+</div>
 <pre>
     
 </pre>
